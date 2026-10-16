@@ -1,0 +1,443 @@
+/* -----------------------------------------------------------------------------
+   Modern Portfolio — Tailwind CSS v4
+   Clean dark theme with subtle gradients, glass cards, and modern interactions
+   ----------------------------------------------------------------------------- */
+
+@import "tailwindcss";
+
+/* ============================================================================
+   DESIGN TOKENS
+   ============================================================================ */
+
+@theme {
+  /* Colors */
+  --color-bg: #08090d;
+  --color-surface: #11131a;
+  --color-surface-2: #181b25;
+  --color-surface-3: #202431;
+
+  --color-text: #f5f7ff;
+  --color-muted: #9ba3b7;
+
+  --color-accent: #8b5cf6;
+  --color-accent-strong: #6366f1;
+  --color-accent-light: #a78bfa;
+
+  --color-danger: #f87171;
+  --color-border: rgba(255, 255, 255, 0.09);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 30px;
+
+  /* Shadows */
+  --shadow-md:
+    0 12px 35px rgba(0, 0, 0, 0.28);
+
+  --shadow-glow:
+    0 0 35px rgba(139, 92, 246, 0.18);
+
+  /* Typography */
+  --font-sans:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+
+  /* Container */
+  --container-content: 1180px;
+}
+
+
+/* ============================================================================
+   BASE
+   ============================================================================ */
+
+@layer base {
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--color-bg);
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+
+    background:
+      radial-gradient(
+        900px 500px at 10% -10%,
+        rgba(99, 102, 241, 0.18),
+        transparent 65%
+      ),
+      radial-gradient(
+        800px 500px at 90% 5%,
+        rgba(139, 92, 246, 0.14),
+        transparent 65%
+      ),
+      radial-gradient(
+        700px 500px at 50% 100%,
+        rgba(59, 130, 246, 0.08),
+        transparent 70%
+      ),
+      var(--color-bg);
+
+    background-attachment: fixed;
+
+    color: var(--color-text);
+
+    font-family: var(--font-sans);
+
+    line-height: 1.6;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: rgba(139, 92, 246, 0.35);
+    color: white;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition:
+      color 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  a:hover {
+    color: var(--color-accent-light);
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0 0 0.6em;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 4.8rem);
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    font-weight: 750;
+  }
+
+  h3 {
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0 0 1em;
+    color: var(--color-muted);
+  }
+}
+
+
+/* ============================================================================
+   COMPONENTS
+   ============================================================================ */
+
+@layer components {
+
+  /* --------------------------------------------------------------------------
+     Primary button
+     -------------------------------------------------------------------------- */
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md px-6 py-3
+      font-semibold cursor-pointer border-0 transition-all duration-300;
+
+    background:
+      linear-gradient(
+        135deg,
+        var(--color-accent),
+        var(--color-accent-strong)
+      );
+
+    color: white;
+
+    box-shadow:
+      0 8px 25px rgba(99, 102, 241, 0.22);
+  }
+
+  .btn:hover {
+    @apply -translate-y-1;
+
+    color: white;
+
+    box-shadow:
+      0 14px 35px rgba(99, 102, 241, 0.32);
+  }
+
+  .btn:active {
+    @apply translate-y-0;
+  }
+
+
+  /* --------------------------------------------------------------------------
+     Secondary button
+     -------------------------------------------------------------------------- */
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-md px-6 py-3
+      font-semibold cursor-pointer transition-all duration-300;
+
+    color: var(--color-text);
+
+    background: rgba(255, 255, 255, 0.025);
+
+    border: 1px solid var(--color-border);
+
+    backdrop-filter: blur(10px);
+  }
+
+  .btn-secondary:hover {
+    @apply -translate-y-1;
+
+    color: white;
+
+    border-color: rgba(139, 92, 246, 0.5);
+
+    background: rgba(139, 92, 246, 0.08);
+
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+
+  /* --------------------------------------------------------------------------
+     Cards
+     -------------------------------------------------------------------------- */
+
+  .card {
+    @apply rounded-lg p-6 transition-all duration-300;
+
+    background:
+      linear-gradient(
+        145deg,
+        rgba(255, 255, 255, 0.045),
+        rgba(255, 255, 255, 0.015)
+      );
+
+    border: 1px solid var(--color-border);
+
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.18);
+
+    backdrop-filter: blur(14px);
+  }
+
+  .card:hover {
+    @apply -translate-y-1;
+
+    border-color:
+      rgba(139, 92, 246, 0.3);
+
+    box-shadow:
+      0 18px 45px rgba(0, 0, 0, 0.28),
+      0 0 30px rgba(139, 92, 246, 0.08);
+  }
+
+
+  /* --------------------------------------------------------------------------
+     Section title
+     -------------------------------------------------------------------------- */
+
+  .section-title {
+    @apply text-text mt-0;
+
+    letter-spacing: -0.035em;
+  }
+
+
+  /* --------------------------------------------------------------------------
+     Lead paragraph
+     -------------------------------------------------------------------------- */
+
+  .lead {
+    @apply text-muted text-[1.08rem] max-w-[68ch];
+
+    line-height: 1.8;
+  }
+
+
+  /* --------------------------------------------------------------------------
+     Technology / category tag
+     -------------------------------------------------------------------------- */
+
+  .tag {
+    @apply inline-flex items-center px-3 py-1 rounded-full
+      text-xs font-medium tracking-wide transition-all duration-200;
+
+    color: #c4b5fd;
+
+    background:
+      rgba(139, 92, 246, 0.08);
+
+    border:
+      1px solid rgba(139, 92, 246, 0.18);
+  }
+
+  .tag:hover {
+    background:
+      rgba(139, 92, 246, 0.15);
+
+    border-color:
+      rgba(139, 92, 246, 0.35);
+
+    color: #ddd6fe;
+  }
+
+
+  /* --------------------------------------------------------------------------
+     Small accent text
+     -------------------------------------------------------------------------- */
+
+  .accent-text {
+    color: var(--color-accent-light);
+  }
+
+
+  /* --------------------------------------------------------------------------
+     Gradient heading
+     -------------------------------------------------------------------------- */
+
+  .gradient-text {
+    background:
+      linear-gradient(
+        135deg,
+        #ffffff 10%,
+        #c4b5fd 50%,
+        #818cf8 90%
+      );
+
+    background-clip: text;
+    -webkit-background-clip: text;
+
+    color: transparent;
+  }
+
+
+  /* --------------------------------------------------------------------------
+     Glass navigation
+     -------------------------------------------------------------------------- */
+
+  .glass-nav {
+    background:
+      rgba(8, 9, 13, 0.72);
+
+    border-bottom:
+      1px solid rgba(255, 255, 255, 0.06);
+
+    backdrop-filter:
+      blur(18px);
+
+    -webkit-backdrop-filter:
+      blur(18px);
+  }
+
+
+  /* --------------------------------------------------------------------------
+     Subtle divider
+     -------------------------------------------------------------------------- */
+
+  .divider {
+    height: 1px;
+
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+      );
+  }
+
+
+  /* --------------------------------------------------------------------------
+     Project image
+     -------------------------------------------------------------------------- */
+
+  .project-image {
+    overflow: hidden;
+
+    border-radius: var(--radius-md);
+
+    border: 1px solid var(--color-border);
+  }
+
+  .project-image img {
+    width: 100%;
+
+    transition:
+      transform 0.5s ease;
+  }
+
+  .project-image:hover img {
+    transform: scale(1.04);
+  }
+}
+
+
+/* ============================================================================
+   OPTIONAL UTILITY CLASSES
+   ============================================================================ */
+
+@layer utilities {
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glow {
+    box-shadow:
+      0 0 45px rgba(139, 92, 246, 0.18);
+  }
+
+  .subtle-grid {
+    background-image:
+      linear-gradient(
+        rgba(255, 255, 255, 0.025) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.025) 1px,
+        transparent 1px
+      );
+
+    background-size: 40px 40px;
+  }
+}
