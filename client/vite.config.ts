@@ -15,6 +15,9 @@ export default defineConfig({
   base: basePath,
   server: {
     port: 5173,
-    open: false
+    open: false,
+    proxy: {
+      '/api': process.env.VITE_DEV_API_TARGET || 'http://localhost:3000'
+    }
   }
 });

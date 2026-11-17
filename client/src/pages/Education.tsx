@@ -1,66 +1,105 @@
-// -----------------------------------------------------------------------------
-// Education.tsx — the /education page.
-// Author: Bill Chen
-//
-// Concepts introduced here:
-//   • Deriving a value inside `.map()` before returning JSX. When the callback
-//     needs a local variable, use a full function body with `return (...)`
-//     instead of the concise arrow form `(x) => (...)`.
-//   • Ternary expression `cond ? a : b` for picking between two values inline.
-//   • Semantic HTML: <ol> ("ordered list") is used because the timeline has a
-//     meaningful order (most recent first). Assistive tech announces it as a
-//     numbered list.
-// -----------------------------------------------------------------------------
+import { useState } from 'react';
+import QualificationForm from '../components/education/QualificationForm';
+import { FormAlert } from '../components/Field';
+import { useAuth } from '../context/AuthContext';
+import { useResource } from '../lib/hooks/useResource';
+import { messageOf } from '../../services/api';
+import type { Qualification } from '../types';
 
-type Qualification = {
-  id: string;
-  degree: string;
-  institution: string;
-  startYear: number;
-  endYear: number;
-  detail: string;
-};
-
-const QUALIFICATIONS: Qualification[] = [
-  {
-    id: 'degree',
-    degree: 'Software Engineering Technician',
-    institution: 'Centennial College, Toronto, ON',
-    startYear: 2025,
-    endYear: 2027,
-    detail: 'Specialization in software development and testing.'
-  }
-];
+// null = nothing open, 'new' = the add form, otherwise the id being edited.
+type Editing = null | 'new' | string;
 
 export default function Education() {
+  const { isAdmin } = useAuth();
+  const { items, loading, error, create, update, remove } = useResource<Qualification>('/qualifications');
+  const [editing, setEditing] = useState<Editing>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const handleDelete = async (item: Qualification) => {
+    if (!window.confirm(`Delete "${item.degree}"? This can't be undone.`)) return;
+    setActionError(null);
+    try {
+      await remove(item._id);
+    } catch (caught) {
+      setActionError(messageOf(caught));
+    }
+  };
+
   return (
     <section>
-      <h1 className="section-title">Education</h1>
-      <p className="lead">
-        Formal qualifications and certifications, most recent first.
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="section-title">Education</h1>
+          <p className="lead">Formal qualifications and certifications, most recent first.</p>
+        </div>
+        {isAdmin && editing !== 'new' && (
+          <button type="button" className="btn" onClick={() => setEditing('new')}>
+            Add qualification
+          </button>
+        )}
+      </div>
 
-      {/* `list-none` removes the default numbering (we render the year
-          ourselves), and `grid gap-4` stacks the entries with even spacing. */}
+      <FormAlert message={actionError} />
+
+      {editing === 'new' && (
+        <div className="mt-6">
+          <QualificationForm
+            onCancel={() => setEditing(null)}
+            onSave={async (payload) => {
+              await create(payload);
+              setEditing(null);
+            }}
+          />
+        </div>
+      )}
+
+      {loading && <p role="status" aria-live="polite" className="mt-6">Loading…</p>}
+      {error && <div className="mt-6"><FormAlert message={error} /></div>}
+      {!loading && !error && items.length === 0 && (
+        <div className="card mt-6">
+          <p className="m-0">
+            {isAdmin ? 'No qualifications yet. Use “Add qualification” to create the first one.' : 'No qualifications have been added yet.'}
+          </p>
+        </div>
+      )}
+
       <ol className="list-none p-0 mt-6 grid gap-4">
-        {QUALIFICATIONS.map((item) => {
-          const yearLabel =
-            item.startYear === item.endYear
-              ? `${item.startYear}`
-              : `${item.startYear} – ${item.endYear}`;
+        {items.map((item) => {
+          if (editing === item._id) {
+            return (
+              <li key={item._id}>
+                <QualificationForm
+                  initial={item}
+                  onCancel={() => setEditing(null)}
+                  onSave={async (payload) => {
+                    await update(item._id, payload);
+                    setEditing(null);
+                  }}
+                />
+              </li>
+            );
+          }
+
+          const yearLabel = item.startYear === item.endYear ? `${item.startYear}` : `${item.startYear} – ${item.endYear}`;
 
           return (
-            // Two-column layout above sm; single column below. `sm:` is
-            // Tailwind's "small breakpoint and up" prefix.
-            <li
-              key={item.id}
-              className="card grid gap-5 items-start grid-cols-1 sm:grid-cols-[140px_1fr]"
-            >
+            <li key={item._id} className="card grid gap-5 items-start grid-cols-1 sm:grid-cols-[140px_1fr]">
               <div className="font-bold text-accent text-[1.05rem]">{yearLabel}</div>
               <div>
                 <h3 className="mb-1">{item.degree}</h3>
                 <p className="text-text mb-1">{item.institution}</p>
-                <p className="mb-0">{item.detail}</p>
+                {item.detail && <p className="mb-0">{item.detail}</p>}
+
+                {isAdmin && (
+                  <div className="flex gap-2 mt-3">
+                    <button type="button" className="btn-secondary btn-sm" onClick={() => setEditing(item._id)}>
+                      Edit
+                    </button>
+                    <button type="button" className="btn-secondary btn-danger btn-sm" onClick={() => handleDelete(item)}>
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </li>
           );

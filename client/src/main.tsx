@@ -22,6 +22,7 @@ import { BrowserRouter } from 'react-router-dom';
 // The top-level App component and the global stylesheet.
 import App from './App';
 import './styles/index.css';
+import { AuthProvider } from './context/AuthContext';
 
 // Vite exposes the deploy base path as `import.meta.env.BASE_URL`. It always
 // ends with a slash ("/" or "/repo-name/"), but react-router's `basename`
@@ -41,7 +42,9 @@ ReactDOM.createRoot(rootElement).render(
   // early. It has no effect on the production build.
   <React.StrictMode>
     <BrowserRouter basename={routerBasename}>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

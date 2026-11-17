@@ -9,10 +9,11 @@ starting point if needed.
 
 Authentication endpoints:
 
-- `POST /api/auth/register` — JSON body: `{ "name", "email", "password" }`.
-  Passwords must be at least 8 characters. Returns a JWT and the public user.
-- `POST /api/auth/login` — JSON body: `{ "email", "password" }`. Returns a JWT
-  and the public user.
+- `POST /api/auth/signup` — JSON body: `{ "firstName", "lastName", "email",
+  "password" }`. Passwords must be at least 8 characters. Returns a JWT and
+  the public user.
+- `POST /api/auth/signin` — JSON body: `{ "email", "password" }`. Returns a
+  JWT and the public user.
 - `GET /api/auth/me` — requires `Authorization: Bearer <token>`. Returns the
   authenticated public user.
 

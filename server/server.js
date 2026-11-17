@@ -6,22 +6,29 @@ import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 
 import mongoose from "mongoose";
-import app from "./server/express.js";
-import router from "./server/assets-router.js";
+import app from "./express.js";
+import router from "./assets-router.js";
 //const assetsRouter = require("./server/assets-router");
-import contactRoutes from "./routes/contact.routes.js";
-import projectRoutes from "./routes/project.routes.js";
-import qualificationRoutes from "./routes/qualification.routes.js";
-import authRoutes from "./routes/auth.routes.js";
+//import contactRoutes from "./routes/contact.routes.js";
+import contactRoutes from './routes/contactRoutes.js';
+//import projectRoutes from "/routes/project.routes.js";
+import projectRoutes from './routes/projectRoutes.js';
+//import qualificationRoutes from "./routes/qualification.routes.js";
+import qualificationRoutes from './routes/qualificationRoutes.js';
+//import authRoutes from "./routes/auth.routes.js";
+import authRoutes from './routes/authRoutes.js';
 import { validateJwtConfiguration } from "./middleware/authenticate.js";
-import userRoutes from "./routes/user.routes.js";
+//import userRoutes from "./routes/user.routes.js";
+import userRoutes from './routes/userRoutes.js';
+import ensureAdmin from './utils/ensureAdmin.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, ".env") });
 validateJwtConfiguration();
 
 app.use("/src", router);
-app.use("/api/contacts", contactRoutes);
+// app.use("/api/contacts", contactRoutes);
+app.use('/api/contacts', contactRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/qualifications", qualificationRoutes);
 app.use("/api/auth", authRoutes);
@@ -34,7 +41,7 @@ mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB database: Portfolio"))
   .catch((err) => console.error("MongoDB connection error:", err.message));
-
+  await ensureAdmin();
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server is running on port " + (process.env.PORT || 3000));
 });
